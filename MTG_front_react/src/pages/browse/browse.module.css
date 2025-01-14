@@ -1,0 +1,38 @@
+.cardsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  flex: 1;
+  padding: 1rem;
+  justify-content: center;
+  gap: 20px;
+  /* transition: flex 3s ease-in-out; */
+}
+
+.open {
+  display: flex;
+  flex-wrap: wrap;
+  flex: 3;
+  padding: 1rem;
+  gap: 20px;
+  justify-content: center;
+  transition: flex 3s ease;
+}
+
+.aside {
+  flex: 1;
+  justify-content: end;
+  transition: right 3s ease-in-out;
+  background-color: slategray;
+}
+
+.cardPreview {
+  width: 50px;
+  object-fit: cover;
+}
+
+.cardPreview:hover {
+  transform: scale(10);
+  position: absolute;
+  right: 50%;
+  top: 50%;
+}

@@ -1,0 +1,9 @@
+.app {
+  font-family: "Inter";
+  font-weight: 400;
+  min-height: 100vh;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}

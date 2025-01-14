@@ -1,0 +1,178 @@
+interface Card {
+  id: string;
+  name: string;
+  // Add other properties as needed
+}
+
+interface DeckCard {
+  card: Card;
+  quantity: number;
+}
+
+class Deck {
+  private cards: DeckCard[] = [];
+
+  addCard(newCard: Card) {
+    const existingCard = this.cards.find(dc => dc.card.id === newCard.id);
+    if (existingCard) {
+      if (existingCard.quantity < 4) {
+        existingCard.quantity += 1;
+      } else {
+        console.log("You can only have up to 4 of the same card.");
+      }
+    } else {
+      this.cards.push({ card: newCard, quantity: 1 });
+    }
+  }
+
+  removeCard(cardToRemove: Card) {
+    const cardIndex = this.cards.findIndex(dc => dc.card.id === cardToRemove.id);
+    if (cardIndex !== -1) {
+      if (this.cards[cardIndex].quantity > 1) {
+        this.cards[cardIndex].quantity -= 1;
+      } else {
+        this.cards.splice(cardIndex, 1);
+      }
+    }
+  }
+
+  getDeck() {
+    return this.cards;
+  }
+}
+
+
+
+
+
+
+
+
+     // Deck entity
+     class Deck {
+       id: number;
+       name: string;
+       owner: User;
+       cards: DeckCard[];
+     }
+
+     // DeckCard entity
+     class DeckCard {
+       id: number;
+       card: Card;
+       quantity: number;
+     }
+
+     // Card entity
+     class Card {
+       id: number;
+       name: string;
+       // other card properties
+     }
+
+
+
+
+
+
+
+          interface Card {
+       id: string;
+       name: string;
+       // other properties
+     }
+
+     interface DeckCard {
+       card: Card;
+       quantity: number;
+     }
+
+     interface Deck {
+       id: string;
+       name: string;
+       owner: string;
+       cards: DeckCard[];
+     }
+
+
+
+
+
+
+          function addCardToDeck(deck: Deck, card: Card) {
+       const existingCard = deck.cards.find(dc => dc.card.id === card.id);
+       if (existingCard) {
+         if (existingCard.quantity < 4) {
+           existingCard.quantity += 1;
+         } else {
+           console.log("Maximum of 4 cards allowed.");
+         }
+       } else {
+         deck.cards.push({ card, quantity: 1 });
+       }
+     }
+
+
+
+
+
+          function removeCardFromDeck(deck: Deck, card: Card) {
+       const cardIndex = deck.cards.findIndex(dc => dc.card.id === card.id);
+       if (cardIndex !== -1) {
+         if (deck.cards[cardIndex].quantity > 1) {
+           deck.cards[cardIndex].quantity -= 1;
+         } else {
+           deck.cards.splice(cardIndex, 1);
+         }
+       }
+     }
+
+
+
+
+
+     import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from "typeorm";
+
+// Card entity
+@Entity()
+export class Card {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column()
+  name: string;
+
+  // Add other card properties as needed
+}
+
+// DeckCard entity
+@Entity()
+export class DeckCard {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @ManyToOne(() => Card, { eager: true })
+  card: Card;
+
+  @Column()
+  quantity: number;
+
+  @ManyToOne(() => Deck, (deck) => deck.cards)
+  deck: Deck;
+}
+
+// Deck entity
+@Entity()
+export class Deck {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column()
+  name: string;
+
+  @Column()
+  owner: string; // Assuming owner is a string, adjust as needed
+
+  @OneToMany(() => DeckCard, (deckCard) => deckCard.deck, { cascade: true })
+  cards: DeckCard[];
+}

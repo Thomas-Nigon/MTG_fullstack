@@ -1,0 +1,18 @@
+.navbar {
+  padding: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  background-color: hsl(var(--background));
+  border-bottom: 1px solid hsl(var(--border));
+}
+.navbar__links {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.navbar__title {
+  color: hsl(var(--primary));
+}
+.active {
+  border-bottom: 2px solid hsl(var(--primary));
+}
