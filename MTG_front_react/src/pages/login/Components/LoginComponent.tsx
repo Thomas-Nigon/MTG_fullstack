@@ -17,27 +17,22 @@ import { MdOutlineMailOutline, MdLockOutline } from "react-icons/md";
 import { LOGIN } from "@/lib/login";
 import { Link, useNavigate } from "react-router-dom";
 import { useMutation } from "@apollo/client";
-import { useContext, useEffect } from "react";
-import { UserContext } from "@/contexts/UserContext";
+
 import { MutationAuthArgs } from "@/lib/graphQL/generated/graphql-types";
+import { getUserFromToken } from "@/lib/getUserFromToken";
+
+export interface ILoginResult {
+  auth: string;
+}
 
 export default function LoginComponent() {
   const navigate = useNavigate();
-  const { setUser, user } = useContext(UserContext);
-
-  useEffect(() => {}, [user, setUser]);
 
   const [loginUser] = useMutation<MutationAuthArgs>(LOGIN, {
-    onCompleted: () => {
-      setUser({
-        id: "1",
-        name: "Thomas",
-        email: "thomas@gmail.com",
-        role: "user",
-        isLogged: true,
-        avatar: "",
-      });
-
+    onCompleted: (result) => {
+      console.log("result:", result);
+      const response = result.auth;
+      getUserFromToken(response);
       navigate("/");
     },
     onError: (error) => {

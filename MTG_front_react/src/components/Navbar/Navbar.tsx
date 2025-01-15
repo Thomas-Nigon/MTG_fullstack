@@ -1,7 +1,7 @@
 "use client";
 import styles from "./Navbar.module.css";
-import { useContext, useEffect } from "react";
-import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
 
 import { IoLogInOutline } from "react-icons/io5";
 import { MoonIcon, SunIcon } from "@radix-ui/react-icons";
@@ -22,24 +22,30 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 import { useTheme } from "../../contexts/Theme-proviter";
 import { clearUser } from "@/lib/clearUser";
-import { UserContext } from "@/contexts/UserContext";
+import { useStore } from "zustand";
+import userStore from "@/lib/ZustandStores/userStore";
 
 export default function Navbar() {
   const { setTheme } = useTheme();
-  const { user, setUser } = useContext(UserContext);
+  // const { user, setUser } = useContext(UserContext);
+  const { user } = useStore(userStore);
   //const currentRoute = useLocation();
   const navigate = useNavigate();
 
-  useEffect(() => {}, [user, setUser]);
+  useEffect(() => {
+    const user = userStore.getState().user;
+    console.log("user from navbar:", user);
+  }, [user]);
 
   const handleLogOut = () => {
     clearUser();
-    setUser({
-      ...user,
-      name: "",
+    userStore.getState().setUser({
+      id: "",
+      username: "",
       email: "",
       role: "",
       isLogged: false,
+      avatar: "",
     });
     navigate("/login");
   };
@@ -60,12 +66,12 @@ export default function Navbar() {
           Home
         </NavLink>
 
-        {user.isLogged ? (
+        {user?.isLogged ? (
           <NavLink to={`/users/${user.id}`}>
             <Avatar>
-              <AvatarImage src={user.avatar} />
+              <AvatarImage src={user?.avatar} />
               <AvatarFallback>
-                {user.name.slice(0, 2).toUpperCase()}
+                {user?.username.slice(0, 2).toUpperCase()}
               </AvatarFallback>
             </Avatar>
           </NavLink>
@@ -78,7 +84,7 @@ export default function Navbar() {
         >
           Browse
         </NavLink>
-        {user.role === "admin" && (
+        {user?.role === "admin" && (
           <NavLink
             to="/admin"
             className={({ isActive }) => (isActive ? styles.active : "")}
@@ -107,7 +113,7 @@ export default function Navbar() {
           </DropdownMenuContent>
         </DropdownMenu>
 
-        {user.isLogged && (
+        {user?.isLogged && (
           <button onClick={handleLogOut}>
             <IoLogInOutline size={32} />
           </button>

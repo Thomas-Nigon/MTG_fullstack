@@ -1,4 +1,12 @@
-import { Arg, Field, InputType, Mutation, Query } from "type-graphql";
+import {
+  Arg,
+  Authorized,
+  Ctx,
+  Field,
+  InputType,
+  Mutation,
+  Query,
+} from "type-graphql";
 
 import { Resolver } from "type-graphql";
 import { User, UserInput } from "../entities/user.typeDefs";
@@ -49,9 +57,16 @@ export class UserResolver {
    * @throws Will throw an error if the user is not found.
    */
   @Mutation(() => User)
-  async updateUser(@Arg("id") id: string, @Arg("data") data: UserInput) {
+  @Authorized("user", "admin")
+  async updateUser(
+    @Arg("id") id: string,
+    @Arg("data") data: UserInput,
+    @Ctx() context: any
+  ) {
     const user = await User.findOneBy({ id });
     if (!user) throw new Error("User not found");
+    if (context.user.role !== "admin" || context.user.id !== id)
+      throw new Error("You are not authorized");
     Object.assign(user, data);
     await user.save();
     return {
@@ -64,10 +79,15 @@ export class UserResolver {
   /**
    * Deletes a user by their ID.
    * @param {string} id - The ID of the user to delete.
+   * @param {any} context - The context containing the current user's information.
    * @returns {Promise<boolean>} A promise that resolves to true if the user was deleted, false otherwise.
+   * @throws Will throw an error if the user is not found or if the user is not authorized.
    */
   @Mutation(() => Boolean)
-  async deleteUser(@Arg("id") id: string) {
+  @Authorized("admin")
+  async deleteUser(@Arg("id") id: string, @Ctx() context: any) {
+    const user = await User.findOneBy({ id });
+    if (!user) throw new Error("User not found");
     const result = await User.delete(id);
     return result.affected === 1;
   }

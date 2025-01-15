@@ -1,6 +1,6 @@
-import { myUserContext } from "@/types-d";
+import { IUserContext } from "@/types-d";
 
-export type AccessRule = (user: myUserContext) => boolean;
+export type AccessRule = (user: IUserContext) => boolean;
 
 /* 
 Same as
@@ -19,6 +19,6 @@ export const isLoggedIn: AccessRule = (user) => {
   return false;
 };
 
-export const checkAccess = (user: myUserContext, rule: AccessRule): boolean => {
+export const checkAccess = (user: IUserContext, rule: AccessRule): boolean => {
   return rule(user);
 };

@@ -134,6 +134,12 @@ Ensure you have the following installed on your machine:
    http://localhost:5050
    ```
 
+   The vizualizer will be accessible at:
+
+   ```
+   http://localhost:8080/vizualizer
+   ```
+
    You can interact with the API endpoints as described in the API Endpoints section of this README.
 
 4. **Stopping the containers**:

@@ -24,10 +24,13 @@ services:
       POSTGRES_DB: ${DB_SCHEMA}
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PORT: ${DB_PORT}
+      POSTGRES_HOST: ${DB_HOST}
 
   vizualizer:
     container_name: vizualizer_FullStack_MTG
     image: adminer
+    ports:
+      - "8080:8080"
 
   gateway:
     container_name: gateway_FullStack_MTG
