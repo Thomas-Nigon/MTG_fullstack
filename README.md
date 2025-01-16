@@ -137,7 +137,7 @@ Ensure you have the following installed on your machine:
    The vizualizer will be accessible at:
 
    ```
-   http://localhost:8080/vizualizer
+   http://localhost:7001/vizualizer
    ```
 
    You can interact with the API endpoints as described in the API Endpoints section of this README.

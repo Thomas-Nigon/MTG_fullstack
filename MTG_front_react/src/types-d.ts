@@ -17,6 +17,14 @@ export interface IUser {
   isLogged: boolean;
   avatar?: string;
 }
+export interface IUserContext {
+  id: string;
+  username: string;
+  email: string;
+  role: string;
+  isLogged: boolean;
+  avatar?: string;
+}
 
 export type Params = {
   params: {

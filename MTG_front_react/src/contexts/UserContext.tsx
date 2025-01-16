@@ -3,7 +3,7 @@ import { IUserContext, IUserContextType } from "../types-d";
 
 const defaultUser: IUserContext = {
   id: "",
-  name: "",
+  username: "",
   email: "",
   role: "user",
   isLogged: false,

@@ -16,7 +16,7 @@ export default function User() {
   return (
     <main>
       <h1>Welcome to user page</h1>
-      <p>your are user : {user.name}</p>
+      <p>your are user : {user.username}</p>
       <p>id : {user.id}</p>
       {decks &&
         decks.map((deck) => (

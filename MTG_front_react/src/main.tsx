@@ -14,7 +14,7 @@ import Register from "./pages/register/Register";
 import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
 
 export const client = new ApolloClient({
-  uri: "http://localhost:4000/graphql", // Replace with your GraphQL server URL
+  uri: `http://localhost:${import.meta.env.VITE_GATEWAY_PORT}/api`,
   cache: new InMemoryCache(),
 });
 
