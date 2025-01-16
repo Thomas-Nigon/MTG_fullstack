@@ -17,10 +17,10 @@ import { useForm } from "react-hook-form";
 import { MdOutlineMailOutline } from "react-icons/md";
 import { FaEye, FaEyeSlash } from "react-icons/fa6";
 
-import { CREATE_USER } from "@/lib/createUser";
+import { CREATE_USER } from "@/services/user.service/user.createUser";
 import { useMutation } from "@apollo/client";
 import { useNavigate } from "react-router-dom";
-import { MutationCreateUserArgs } from "@/lib/graphQL/generated/graphql-types";
+import { MutationCreateUserArgs } from "@/services/graphQL/generated/graphql-types";
 
 export default function RegisterComponent() {
   const navigate = useNavigate();

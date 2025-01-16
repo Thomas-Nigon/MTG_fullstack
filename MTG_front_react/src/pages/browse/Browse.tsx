@@ -11,13 +11,13 @@ import SingleCard from "@/components/SingleCard/SingleCard";
 import BrowseSideMenu from "@/components/BrowseSideMenu/BrowseSideMenu";
 import BrowsePagination from "./components/Pagination/BrowsePagination";
 import BrowserFilterBar from "@/components/BrowserFilterBar/BrowserFilterBAr";
-import { GET_ALL_CARDS } from "@/lib/getAllCards";
+import { GET_ALL_CARDS } from "@/services/getAllCards";
 import { useLazyQuery } from "@apollo/client";
-import { getExtensionList } from "@/lib/getExtensionList";
+import { getExtensionList } from "@/services/getExtensionList";
 import {
   GetCardsWithQueryQuery,
   GetCardsWithQueryQueryVariables,
-} from "@/lib/graphQL/generated/graphql-types";
+} from "@/services/graphQL/generated/graphql-types";
 
 export default function Browse() {
   const [cardsQueries, setCardQueries] = useState<cardQueryInterface>({

@@ -44,6 +44,14 @@ export class User extends BaseEntity {
   @Column({ length: 255 })
   password!: string;
 
+  @Field()
+  @Column({ length: 255, default: "user" })
+  role!: string;
+
+  @Field()
+  @Column({ length: 255, default: "" })
+  avatar!: string;
+
   @BeforeInsert()
   @BeforeUpdate()
   async hashPassword() {

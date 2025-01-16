@@ -1,14 +1,11 @@
 "use client";
 import styles from "./Navbar.module.css";
-import { useContext, useEffect } from "react";
-import { NavLink, useLocation, useNavigate } from "react-router-dom";
-
+import { useEffect } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
 import { IoLogInOutline } from "react-icons/io5";
 import { MoonIcon, SunIcon } from "@radix-ui/react-icons";
-
 //import { TbLayoutSidebarLeftExpand } from "react-icons/tb";
 //import { TbLayoutSidebarLeftCollapse } from "react-icons/tb";
-
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -16,31 +13,36 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-//import { getUserFromCookie } from "@/lib/getUserFromCookie";
-
 import { useTheme } from "../../contexts/Theme-proviter";
-import { clearUser } from "@/lib/clearUser";
-import { UserContext } from "@/contexts/UserContext";
+import { useStore } from "zustand";
+import userStore from "@/services/ZustandStores/userStore";
+import { clearUser } from "@/services/user.service/user.clear";
+import { useLazyQuery } from "@apollo/client";
+import { IS_LOGGED } from "@/services/user.service/user.isLooged";
+import { handleUser } from "@/services/user.service/user.handleUser";
 
 export default function Navbar() {
   const { setTheme } = useTheme();
-  const { user, setUser } = useContext(UserContext);
-  //const currentRoute = useLocation();
+  const { user } = useStore(userStore);
   const navigate = useNavigate();
-
-  useEffect(() => {}, [user, setUser]);
+  const [isSessionActive] = useLazyQuery(IS_LOGGED, {
+    onCompleted: (response) => {
+      if (response.isLogged) {
+        handleUser(localStorage.getItem("userId") as string);
+      } else localStorage.removeItem("userId");
+    },
+    onError: (error) => {
+      console.error("Error checking session:", error);
+    },
+  });
+  useEffect(() => {
+    isSessionActive();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleLogOut = () => {
     clearUser();
-    setUser({
-      ...user,
-      name: "",
-      email: "",
-      role: "",
-      isLogged: false,
-    });
     navigate("/login");
   };
 
@@ -60,12 +62,12 @@ export default function Navbar() {
           Home
         </NavLink>
 
-        {user.isLogged ? (
+        {user?.isLogged ? (
           <NavLink to={`/users/${user.id}`}>
             <Avatar>
-              <AvatarImage src={user.avatar} />
+              <AvatarImage src={user?.avatar} />
               <AvatarFallback>
-                {user.name.slice(0, 2).toUpperCase()}
+                {user?.username.slice(0, 2).toUpperCase()}
               </AvatarFallback>
             </Avatar>
           </NavLink>
@@ -78,7 +80,7 @@ export default function Navbar() {
         >
           Browse
         </NavLink>
-        {user.role === "admin" && (
+        {user?.role === "admin" && (
           <NavLink
             to="/admin"
             className={({ isActive }) => (isActive ? styles.active : "")}
@@ -107,7 +109,7 @@ export default function Navbar() {
           </DropdownMenuContent>
         </DropdownMenu>
 
-        {user.isLogged && (
+        {user?.isLogged && (
           <button onClick={handleLogOut}>
             <IoLogInOutline size={32} />
           </button>
