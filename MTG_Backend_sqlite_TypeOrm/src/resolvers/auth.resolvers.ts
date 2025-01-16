@@ -1,9 +1,17 @@
 import argon2 from "argon2";
 import { SignJWT } from "jose";
 import { User } from "../entities/user.typeDefs";
-import { Arg, Mutation, Resolver, Ctx } from "type-graphql";
+import { Arg, Mutation, Resolver, Ctx, Query } from "type-graphql";
 import "dotenv/config";
 import { Response } from "express";
+
+type userResponse = {
+  id: string;
+  email: string;
+  username: string;
+  role: string;
+  avatar: string;
+};
 
 @Resolver(User)
 export class AuthResolver {
@@ -35,6 +43,7 @@ export class AuthResolver {
       if (!decode) throw new Error("Invalid password");
 
       const jwtSecretKey = new TextEncoder().encode(process.env.JWT_SECRET);
+
       const accessToken = await new SignJWT({
         userId: user.id,
         email: user.email,
@@ -49,16 +58,38 @@ export class AuthResolver {
       // Send the token as an HTTP-only cookie
       res.cookie("access_token", accessToken, {
         httpOnly: true, // Ensures the cookie cannot be accessed via JavaScript
-        secure: false, // Ensures the cookie is sent only over HTTPS
-        // maxAge: 10 * 60 * 1000, // Expiry time: 10 minutes (in milliseconds)
-        sameSite: "none", // Prevents the cookie from being sent with cross-origin requests
+        secure: true, // Ensures the cookie is sent only over HTTPS
+        maxAge: 10 * 60 * 1000, // Expiry time: 10 minutes (in milliseconds)
+        sameSite: "strict", // Prevents the cookie from being sent with cross-origin requests
         //domain: "localhost", // Set the domain to localhost
       });
+      const userResponse: userResponse = {
+        id: user.id,
+        email: user.email,
+        username: user.username,
+        role: user.role,
+        avatar: user.avatar,
+      };
 
-      return accessToken; // return something else than accessTOken.
+      return user.id;
     } catch (error) {
       console.error(error);
       throw new Error("Internal server error");
     }
+  }
+
+  @Query(() => Boolean)
+  async isLogged(@Ctx() { req, res }: { req: Request; res: Response }) {
+    const sessionCookies = (req.headers as any).cookie;
+    if (sessionCookies?.includes("access_token=")) {
+      return true;
+    }
+    return false;
+  }
+
+  @Query(() => Boolean)
+  async logout(@Ctx() { req, res }: { req: Request; res: Response }) {
+    res.clearCookie("access_token");
+    return true;
   }
 }

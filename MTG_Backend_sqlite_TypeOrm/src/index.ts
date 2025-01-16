@@ -11,7 +11,6 @@ import { populateDatabase } from "./libs/populatedBGraphQL";
 import { AuthResolver } from "./resolvers/auth.resolvers";
 import { DeckResolver } from "./resolvers/deck.resolvers";
 import { jwtVerify } from "jose";
-import cookieParser from "cookie-parser";
 import { authChecker } from "./middleware/authChecker";
 
 const main = async () => {

@@ -37,7 +37,7 @@ import {
 
 import { Input } from "@/components/ui/input";
 import { CardInterface } from "@/types-d";
-import { createDeck } from "@/lib/createDeck";
+import { createDeck } from "@/services/createDeck";
 import { Link } from "react-router-dom";
 
 interface BrowseSideMenuProps {

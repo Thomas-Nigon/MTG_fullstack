@@ -2,13 +2,10 @@
 import styles from "./Navbar.module.css";
 import { useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-
 import { IoLogInOutline } from "react-icons/io5";
 import { MoonIcon, SunIcon } from "@radix-ui/react-icons";
-
 //import { TbLayoutSidebarLeftExpand } from "react-icons/tb";
 //import { TbLayoutSidebarLeftCollapse } from "react-icons/tb";
-
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -16,37 +13,36 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-//import { getUserFromCookie } from "@/lib/getUserFromCookie";
-
 import { useTheme } from "../../contexts/Theme-proviter";
-import { clearUser } from "@/lib/clearUser";
 import { useStore } from "zustand";
-import userStore from "@/lib/ZustandStores/userStore";
+import userStore from "@/services/ZustandStores/userStore";
+import { clearUser } from "@/services/user.service/user.clear";
+import { useLazyQuery } from "@apollo/client";
+import { IS_LOGGED } from "@/services/user.service/user.isLooged";
+import { handleUser } from "@/services/user.service/user.handleUser";
 
 export default function Navbar() {
   const { setTheme } = useTheme();
-  // const { user, setUser } = useContext(UserContext);
   const { user } = useStore(userStore);
-  //const currentRoute = useLocation();
   const navigate = useNavigate();
-
+  const [isSessionActive] = useLazyQuery(IS_LOGGED, {
+    onCompleted: (response) => {
+      if (response.isLogged) {
+        handleUser(localStorage.getItem("userId") as string);
+      } else localStorage.removeItem("userId");
+    },
+    onError: (error) => {
+      console.error("Error checking session:", error);
+    },
+  });
   useEffect(() => {
-    const user = userStore.getState().user;
-    console.log("user from navbar:", user);
-  }, [user]);
+    isSessionActive();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleLogOut = () => {
     clearUser();
-    userStore.getState().setUser({
-      id: "",
-      username: "",
-      email: "",
-      role: "",
-      isLogged: false,
-      avatar: "",
-    });
     navigate("/login");
   };
 

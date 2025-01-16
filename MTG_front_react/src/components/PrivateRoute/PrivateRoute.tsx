@@ -1,7 +1,7 @@
-import { UserContext } from "@/contexts/UserContext";
-import React, { useContext } from "react";
+import React from "react";
 import Redirect from "../Redirect/Redirect";
-import { AccessRule, checkAccess } from "@/lib/checkAcces";
+import { AccessRule, checkAccess } from "@/services/checkAcces";
+import userStore from "@/services/ZustandStores/userStore";
 
 export default function PrivateRoute({
   children,
@@ -10,7 +10,10 @@ export default function PrivateRoute({
   children: React.ReactNode;
   accessRule: AccessRule;
 }) {
-  const { user } = useContext(UserContext);
+  const user = userStore.getState().user;
 
+  if (!user) {
+    return <Redirect />;
+  }
   return <div>{checkAccess(user, accessRule) ? children : <Redirect />}</div>;
 }

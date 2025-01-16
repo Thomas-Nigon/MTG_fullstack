@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { UserContext } from "@/contexts/UserContext";
-import { getDecks } from "@/lib/getDecks";
+import { getDecks } from "@/services/getDecks";
 import { DeckInterface } from "@/types-d";
 import { useContext, useEffect, useState } from "react";
 

@@ -14,12 +14,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
 import { MdOutlineMailOutline, MdLockOutline } from "react-icons/md";
-import { LOGIN } from "@/lib/login";
+import { LOGIN } from "@/services/user.service/user.login";
 import { Link, useNavigate } from "react-router-dom";
 import { useMutation } from "@apollo/client";
 
-import { MutationAuthArgs } from "@/lib/graphQL/generated/graphql-types";
-import { getUserFromToken } from "@/lib/getUserFromToken";
+import { MutationAuthArgs } from "@/services/graphQL/generated/graphql-types";
+import { handleUser } from "@/services/user.service/user.handleUser";
 
 export interface ILoginResult {
   auth: string;
@@ -29,10 +29,8 @@ export default function LoginComponent() {
   const navigate = useNavigate();
 
   const [loginUser] = useMutation<MutationAuthArgs>(LOGIN, {
-    onCompleted: (result) => {
-      console.log("result:", result);
-      const response = result.auth;
-      getUserFromToken(response);
+    onCompleted: (response) => {
+      handleUser(response.auth);
       navigate("/");
     },
     onError: (error) => {

@@ -6,6 +6,7 @@ interface UserState {
   setUser: (state: IUser) => void;
 }
 
+//const userFromLocalStorage = JSON.parse(localStorage.getItem("user"));
 const userStore = create<UserState>((set) => ({
   user: {
     id: "",

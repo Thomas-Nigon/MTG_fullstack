@@ -1,11 +1,11 @@
 import { Input } from "@/components/ui/input";
-import { GET_CARDS } from "@/lib/searchCard";
+import { GET_CARDS } from "@/services/searchCard";
 import { useState } from "react";
 import { useLazyQuery } from "@apollo/client";
 import {
   GetCardByNameQuery,
   GetCardByNameQueryVariables,
-} from "@/lib/graphQL/generated/graphql-types";
+} from "@/services/graphQL/generated/graphql-types";
 
 export default function Search() {
   const [searchResults, setSearchResults] = useState<

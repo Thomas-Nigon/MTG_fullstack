@@ -8,7 +8,7 @@ import Browse from "./pages/browse/Browse";
 import User from "./pages/user/User";
 import Admin from "./pages/admin/Admin";
 import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
-import { isAdmin, isLoggedIn } from "./lib/checkAcces";
+import { isAdmin, isLoggedIn } from "./services/checkAcces";
 import Login from "./pages/login/Login";
 import Register from "./pages/register/Register";
 import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";

@@ -131,13 +131,19 @@ Ensure you have the following installed on your machine:
    Once the containers are up and running, the backend server will be accessible at:
 
    ```
-   http://localhost:5050
+   http://localhost:7001/api
    ```
 
    The vizualizer will be accessible at:
 
    ```
    http://localhost:7001/vizualizer
+   ```
+
+   The frontend will be accessible at:
+
+   ```
+   http://localhost:7001
    ```
 
    You can interact with the API endpoints as described in the API Endpoints section of this README.
