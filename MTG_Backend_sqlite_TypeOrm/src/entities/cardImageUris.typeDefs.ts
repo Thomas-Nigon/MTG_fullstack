@@ -8,6 +8,12 @@ export class CardImageUrisInput {
 
   @Field()
   normal!: string;
+
+  @Field()
+  large!: string;
+
+  @Field()
+  png!: string;
 }
 
 @Entity()
@@ -24,4 +30,20 @@ export class CardImageUris extends BaseEntity {
   @Field()
   @Column({ length: 255, nullable: true })
   normal!: string;
+
+  @Field()
+  @Column({ length: 255, nullable: true })
+  large!: string;
+
+  @Field()
+  @Column({ length: 255, nullable: true })
+  png!: string;
+
+  @Field()
+  @Column({ length: 255, nullable: true })
+  art_crop!: string;
+
+  @Field()
+  @Column({ length: 255, nullable: true })
+  border_crop!: string;
 }

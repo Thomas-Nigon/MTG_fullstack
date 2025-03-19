@@ -1,10 +1,10 @@
-import { Arg, Field, InputType, Int } from "type-graphql";
-import { Query } from "type-graphql";
+import { Arg, Int, Query, Resolver } from "type-graphql";
 import { Card, CardQuery, set } from "../entities/cards.typeDefs";
-import { getCardsColors } from "../controllers/cardController";
 import { Like } from "typeorm";
 import { CardPaginationResponse } from "../entities/pagination.typeDefs";
+import { dataSource } from "../config/db";
 
+@Resolver(Card)
 export class CardResolver {
   /**
    * Retrieves all cards from the database.
@@ -145,8 +145,6 @@ export class CardResolver {
           set_name: "ASC",
         },
       });
-      /*     const uniqueSets = [...new Set(sets.flatMap((set) => set.set_name))];
-      return uniqueSets; */
       const uniqueSets = [
         ...new Set(
           sets.map((set) =>
@@ -158,6 +156,30 @@ export class CardResolver {
     } catch (error) {
       console.log(error);
       throw new Error("Error getting sets");
+    }
+  }
+
+  /**
+   * Retrieves an array of 5 random cards.
+   * @returns {Promise<Card[]>} A promise that resolves to an array of Card objects.
+   * @throws Will throw an error if there is an issue retrieving cards.
+   */
+  @Query(() => [Card])
+  async getRandomCards(
+    @Arg("count", () => Int, { defaultValue: 5 }) count: number
+  ): Promise<Card[]> {
+    try {
+      const cards = await dataSource
+        .getRepository(Card)
+        .createQueryBuilder("card")
+        .leftJoinAndSelect("card.image_uris", "image_uris")
+        .orderBy("RANDOM()")
+        .limit(count)
+        .getMany();
+      return cards;
+    } catch (error) {
+      console.error("Error getting random cards:", error);
+      throw new Error("Error getting random cards");
     }
   }
 }

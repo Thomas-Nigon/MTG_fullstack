@@ -3,81 +3,65 @@ import { CardImageUris } from "../entities/cardImageUris.typeDefs";
 import * as fs from "fs";
 import { CardPrice } from "../entities/CardPrice.typeDefs";
 import { Card } from "../entities/cards.typeDefs";
+import { CardStack } from "../entities/cardStack.typeDefs";
+import { Deck } from "../entities/deck.typeDefs";
+import { processCardImageUris } from "./processCardUris";
+import { processCardPrice } from "./processCardPrices";
 
+/**
+ * Populates the database with card data from a JSON file.
+ * Clears existing data in the Card, CardImageUris, CardPrice, CardStack, and Deck tables.
+ * Reads card data from a JSON file and inserts it into the database.
+ *
+ * @throws Will throw an error if there is an issue reading the file or inserting data into the database.
+ */
 export async function populateDatabase() {
   try {
     if (!dataSource.isInitialized) {
       await dataSource.initialize();
     }
-    // await dataSource.initialize();
     // Read the JSON file containing the card array
     const cardsJson = fs.readFileSync("./src/scripts/chunk_0.json", "utf-8");
     const cardsArray = JSON.parse(cardsJson);
+    // Clear the card database
+    await dataSource.manager.delete(Deck, {});
+    await dataSource.manager.delete(CardStack, {});
+    await dataSource.manager.delete(Card, {});
+    await dataSource.manager.delete(CardImageUris, {});
+    await dataSource.manager.delete(CardPrice, {});
 
     // Iterate through each card object in the array
     for (const cardObj of cardsArray) {
-      // check if card is already in the database
-      const currentCard = await dataSource.manager.findOne(Card, {
-        where: { card_id: cardObj.id },
-      });
-      if (!currentCard) {
-        const imageUris = new CardImageUris();
-        if (cardObj.image_uris && cardObj.image_uris.small) {
-          imageUris.small = cardObj.image_uris.small;
-        } else {
-          imageUris.small = "no_image";
-        }
-        if (cardObj.image_uris && cardObj.image_uris.normal) {
-          imageUris.normal = cardObj.image_uris.normal;
-        } else {
-          imageUris.normal = "no_image";
-        }
+      const imageUris = processCardImageUris(cardObj);
+      const cardPrice = processCardPrice(cardObj);
 
-        const cardPrice = new CardPrice();
-        if (cardObj.prices && cardObj.prices.usd) {
-          cardPrice.usd = cardObj.prices.usd;
-        } else {
-          cardPrice.usd = "no_price";
-        }
-        if (cardObj.prices && cardObj.prices.usd_foil) {
-          cardPrice.usd_foil = cardObj.prices.usd_foil;
-        } else {
-          cardPrice.usd_foil = "no_price";
-        }
+      // Create the Card entity
+      const card = new Card();
+      card.card_id = cardObj.id || "no_card_id";
+      card.oracle_id = cardObj.oracle_id || "no_oracle_id";
+      card.name = cardObj.name || "no_name";
+      card.lang = cardObj.lang || "no_lang";
+      card.released_at = cardObj.released_at || "no_released_at";
+      card.image_uris = imageUris;
+      card.mana_cost = cardObj.mana_cost || "no_mana_cost";
+      card.cmc = cardObj.cmc || 0;
+      card.type_line = cardObj.type_line || "no_type_line";
+      card.colors = cardObj.colors ? cardObj.colors : ["none"];
+      card.color_identity = cardObj.color_identity.length
+        ? cardObj.color_identity
+        : ["none"];
+      card.produced_mana = cardObj.produced_mana
+        ? cardObj.produced_mana
+        : ["none"];
+      card.set = cardObj.set || "no_set";
+      card.set_name = cardObj.set_name || "no_set_name";
+      card.rarity = cardObj.rarity || "no_rarity";
+      card.border_color = cardObj.border_color || "no_border_color";
+      card.prices = cardPrice;
 
-        if (!cardObj.mana_cost) {
-          cardObj.mana_cost = "no_mana";
-        }
-
-        // Create the Card entity
-        const card = new Card();
-        card.card_id = cardObj.id;
-        card.oracle_id = cardObj.oracle_id;
-        card.name = cardObj.name;
-        card.lang = cardObj.lang;
-        card.released_at = cardObj.released_at;
-        card.image_uris = imageUris;
-        card.mana_cost = cardObj.mana_cost;
-        card.cmc = cardObj.cmc;
-        card.type_line = cardObj.type_line;
-        card.colors = cardObj.colors ? cardObj.colors : ["none"];
-        card.color_identity = cardObj.color_identity.length
-          ? cardObj.color_identity
-          : ["none"];
-        card.produced_mana = cardObj.produced_mana
-          ? cardObj.produced_mana
-          : ["none"];
-        card.set = cardObj.set;
-        card.set_name = cardObj.set_name;
-        card.rarity = cardObj.rarity;
-        card.border_color = cardObj.border_color;
-        card.prices = cardPrice;
-
-        // Save the card entity (this will also save the related ImageUris entity)
-        await dataSource.manager.save(card);
-      }
+      // Save the card entity (this will also save the related ImageUris entity)
+      await dataSource.manager.save(card);
     }
-
     console.log("Database populated with cards!");
   } catch (error) {
     console.error("Error populating database:", error);

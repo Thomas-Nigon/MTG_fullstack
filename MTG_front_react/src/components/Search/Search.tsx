@@ -2,20 +2,21 @@ import { Input } from "@/components/ui/input";
 import { GET_CARDS } from "@/services/searchCard";
 import { useState } from "react";
 import { useLazyQuery } from "@apollo/client";
+/* import {
+        GetCardByNameQuery,
+        GetCardByNameQueryVariables,
+      } from "@/services/graphQL/generated/graphql-types"; */
 import {
+  Card,
   GetCardByNameQuery,
   GetCardByNameQueryVariables,
-} from "@/services/graphQL/generated/graphql-types";
+} from "@/lib/graphql/generated/graphql-types";
 
 export default function Search() {
-  const [searchResults, setSearchResults] = useState<
-    GetCardByNameQuery["getCardByName"]
-  >([]);
+  const [searchResults, setSearchResults] = useState<Card[]>([]);
   const [inputValue, setInputValue] = useState("");
   const [isFocused, setIsFocused] = useState(false);
-  const [currentCard, setCurrentCard] = useState<
-    GetCardByNameQuery["getCardByName"][0] | null
-  >(null);
+  const [currentCard, setCurrentCard] = useState<Card | null>(null);
 
   const [getCardByName, { error }] = useLazyQuery<
     GetCardByNameQuery,
@@ -23,8 +24,8 @@ export default function Search() {
   >(GET_CARDS, {
     variables: { name: inputValue },
     onCompleted: (data) => {
-      setSearchResults(data.getCardByName);
-      setCurrentCard(data.getCardByName[0]);
+      setSearchResults(data.getCardByName as Card[]);
+      setCurrentCard(data.getCardByName[0] as Card);
     },
   });
 
@@ -53,7 +54,7 @@ export default function Search() {
       <ul className="flex flex-col w-full  m-0 z-10">
         {searchResults &&
           isFocused &&
-          searchResults.map((card) => (
+          searchResults.map((card: Card) => (
             <li
               className="hover:bg-gray-100 hover:text-black p-1 cursor-pointer "
               key={card.id}
@@ -70,7 +71,7 @@ export default function Search() {
 
       <img
         className="mt-10 max-w-80 "
-        src={currentCard?.image_uris.normal}
+        src={currentCard?.image_uris?.normal}
         alt={currentCard?.name}
       />
     </div>

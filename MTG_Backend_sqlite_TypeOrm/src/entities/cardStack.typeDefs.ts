@@ -26,10 +26,7 @@ export class CardStack extends BaseEntity {
   id!: string;
 
   @Field(() => Card)
-  @ManyToOne(() => Card, (card) => card.cardStacks, {
-    cascade: true,
-    eager: true,
-  })
+  @ManyToOne(() => Card, (card) => card.cardStacks)
   card!: Card;
 
   @Column()
