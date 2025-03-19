@@ -47,7 +47,10 @@ export default function Search() {
           onChange={handleSearch}
           type="search"
           placeholder="Search for a card..."
-          onFocus={() => setIsFocused(true)}
+          onFocus={() => {
+            setIsFocused(true);
+            setInputValue("");
+          }}
           value={inputValue}
         />
       </article>
@@ -68,12 +71,16 @@ export default function Search() {
             </li>
           ))}
       </ul>
-
-      <img
-        className="mt-10 max-w-80 "
-        src={currentCard?.image_uris?.normal}
-        alt={currentCard?.name}
-      />
+      {!isFocused && (
+        <img
+          className="mt-10 max-w-80 "
+          src={
+            currentCard?.image_uris?.normal ||
+            "src/assets/cardAssets/Magic_card_back.webp"
+          }
+          alt={currentCard?.name}
+        />
+      )}
     </div>
   );
 }
