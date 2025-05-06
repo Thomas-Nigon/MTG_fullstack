@@ -19,14 +19,15 @@ import { useStore } from "zustand";
 import userStore from "@/services/ZustandStores/userStore";
 import { clearUser } from "@/services/user.service/user.clear";
 import { useLazyQuery } from "@apollo/client";
-import { IS_LOGGED } from "@/services/user.service/user.isLooged";
+
 import { handleUser } from "@/services/user.service/user.handleUser";
+import { IS_LOGGED_QUERY } from "@/services/user.service/user.isLooged";
 
 export default function Navbar() {
   const { setTheme } = useTheme();
   const { user } = useStore(userStore);
   const navigate = useNavigate();
-  const [isSessionActive] = useLazyQuery(IS_LOGGED, {
+  const [isSessionActive] = useLazyQuery(IS_LOGGED_QUERY, {
     onCompleted: (response) => {
       if (response.isLogged) {
         handleUser(localStorage.getItem("userId") as string);

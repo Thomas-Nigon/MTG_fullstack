@@ -87,7 +87,7 @@ export class AuthResolver {
     return false;
   }
 
-  @Query(() => Boolean)
+  @Mutation(() => Boolean)
   async logout(@Ctx() { req, res }: { req: Request; res: Response }) {
     res.clearCookie("access_token");
     return true;

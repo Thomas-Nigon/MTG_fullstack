@@ -115,8 +115,12 @@ export class Card extends BaseEntity {
   @Column({ length: 255, nullable: true })
   released_at!: string;
 
-  @Field(() => CardImageUris)
-  @OneToOne(() => CardImageUris, { cascade: true, eager: true, nullable: true })
+  @Field(() => CardImageUris, { nullable: true })
+  @OneToOne(() => CardImageUris, {
+    cascade: true,
+    eager: true,
+    nullable: true,
+  })
   @JoinColumn()
   image_uris!: CardImageUris;
 

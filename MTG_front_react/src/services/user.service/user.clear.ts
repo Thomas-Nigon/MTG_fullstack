@@ -1,6 +1,6 @@
 import { client } from "@/main";
 import userStore from "../ZustandStores/userStore";
-import { LOGOUT } from "./user.logout";
+import { LOGOUT_MUTATION } from "./user.logout";
 
 export async function clearUser() {
   console.log("clearing user");
@@ -13,7 +13,7 @@ export async function clearUser() {
     isLogged: false,
     avatar: "",
   });
-  client.query({ query: LOGOUT });
+  client.query({ query: LOGOUT_MUTATION });
 
   return null;
 }

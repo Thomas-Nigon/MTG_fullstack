@@ -2,20 +2,21 @@ import { Input } from "@/components/ui/input";
 import { GET_CARDS } from "@/services/searchCard";
 import { useState } from "react";
 import { useLazyQuery } from "@apollo/client";
+/* import {
+        GetCardByNameQuery,
+        GetCardByNameQueryVariables,
+      } from "@/services/graphQL/generated/graphql-types"; */
 import {
+  Card,
   GetCardByNameQuery,
   GetCardByNameQueryVariables,
-} from "@/services/graphQL/generated/graphql-types";
+} from "@/lib/graphql/generated/graphql-types";
 
 export default function Search() {
-  const [searchResults, setSearchResults] = useState<
-    GetCardByNameQuery["getCardByName"]
-  >([]);
+  const [searchResults, setSearchResults] = useState<Card[]>([]);
   const [inputValue, setInputValue] = useState("");
   const [isFocused, setIsFocused] = useState(false);
-  const [currentCard, setCurrentCard] = useState<
-    GetCardByNameQuery["getCardByName"][0] | null
-  >(null);
+  const [currentCard, setCurrentCard] = useState<Card | null>(null);
 
   const [getCardByName, { error }] = useLazyQuery<
     GetCardByNameQuery,
@@ -23,8 +24,8 @@ export default function Search() {
   >(GET_CARDS, {
     variables: { name: inputValue },
     onCompleted: (data) => {
-      setSearchResults(data.getCardByName);
-      setCurrentCard(data.getCardByName[0]);
+      setSearchResults(data.getCardByName as Card[]);
+      setCurrentCard(data.getCardByName[0] as Card);
     },
   });
 
@@ -40,22 +41,25 @@ export default function Search() {
   };
 
   return (
-    <div className="flex flex-col w-full max-w-md items-center space-x-2 ">
+    <div className="flex flex-col w-full max-w-md items-center mx-auto space-x-2 ">
       <article className="flex w-full mt-5 ">
         <Input
           onChange={handleSearch}
           type="search"
           placeholder="Search for a card..."
-          onFocus={() => setIsFocused(true)}
+          onFocus={() => {
+            setIsFocused(true);
+            setInputValue("");
+          }}
           value={inputValue}
         />
       </article>
       <ul className="flex flex-col w-full  m-0 z-10">
         {searchResults &&
           isFocused &&
-          searchResults.map((card) => (
+          searchResults.map((card: Card) => (
             <li
-              className="hover:bg-gray-100 hover:text-black p-1 cursor-pointer "
+              className="hover:bg-accent hover:text-accent-foreground p-1 cursor-pointer rounded-sm"
               key={card.id}
               onClick={() => {
                 setInputValue(card.name);
@@ -67,12 +71,16 @@ export default function Search() {
             </li>
           ))}
       </ul>
-
-      <img
-        className="mt-10 max-w-80 "
-        src={currentCard?.image_uris.normal}
-        alt={currentCard?.name}
-      />
+      {!isFocused && (
+        <img
+          className="mt-10 max-w-80 "
+          src={
+            currentCard?.image_uris?.normal ||
+            "src/assets/cardAssets/Magic_card_back.webp"
+          }
+          alt={currentCard?.name}
+        />
+      )}
     </div>
   );
 }

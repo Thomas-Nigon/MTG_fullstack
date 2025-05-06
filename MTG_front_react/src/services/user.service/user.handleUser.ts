@@ -3,7 +3,7 @@ import userStore from "../ZustandStores/userStore";
 
 import { GET_USER_BY_ID } from "./user.getById";
 
-export async function handleUser(id: string) {
+export async function handleUser(id: any) {
   console.log("userId:", id);
   try {
     const { data } = await client.query({

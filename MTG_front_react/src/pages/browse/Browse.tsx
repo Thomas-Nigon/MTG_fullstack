@@ -17,7 +17,7 @@ import { getExtensionList } from "@/services/getExtensionList";
 import {
   GetCardsWithQueryQuery,
   GetCardsWithQueryQueryVariables,
-} from "@/services/graphQL/generated/graphql-types";
+} from "@/lib/graphql/generated/graphql-types";
 
 export default function Browse() {
   const [cardsQueries, setCardQueries] = useState<cardQueryInterface>({
@@ -94,8 +94,15 @@ export default function Browse() {
           {loading && <p>Loading Cards...</p>}
           {error && <p>Error: {error.message}</p>}
           {data &&
-            data.getCardsWithQuery.cards.map((card: CardInterface) => (
-              <SingleCard key={card.card_id} card={card} addCard={AddCard} />
+            data.getCardsWithQuery.cards.map((card) => (
+              <SingleCard
+                key={card.card_id}
+                card={{
+                  ...card,
+                  image_uris: card.image_uris || { normal: "" },
+                }}
+                addCard={AddCard}
+              />
             ))}
         </section>
         <BrowseSideMenu
