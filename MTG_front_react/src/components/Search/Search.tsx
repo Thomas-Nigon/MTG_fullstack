@@ -41,7 +41,7 @@ export default function Search() {
   };
 
   return (
-    <div className="flex flex-col w-full max-w-md items-center space-x-2 ">
+    <div className="flex flex-col w-full max-w-md items-center mx-auto space-x-2 ">
       <article className="flex w-full mt-5 ">
         <Input
           onChange={handleSearch}
@@ -59,7 +59,7 @@ export default function Search() {
           isFocused &&
           searchResults.map((card: Card) => (
             <li
-              className="hover:bg-gray-100 hover:text-black p-1 cursor-pointer "
+              className="hover:bg-accent hover:text-accent-foreground p-1 cursor-pointer rounded-sm"
               key={card.id}
               onClick={() => {
                 setInputValue(card.name);
