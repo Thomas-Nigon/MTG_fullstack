@@ -158,6 +158,12 @@ Ensure you have the following installed on your machine:
 
    This will stop and remove the containers, but the data in your SQLite database will persist in the `./data` directory.
 
+5. **Seed the database**:
+
+```bash
+docker exec -it backend-mtg sh -c "npm run seed"
+```
+
 ## Notes
 
 - Ensure that the `docker-compose.yaml` file is correctly configured with the necessary services and volumes.

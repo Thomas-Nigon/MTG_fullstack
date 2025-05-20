@@ -1,6 +1,6 @@
 import argon2 from "argon2";
 import { SignJWT } from "jose";
-import { User } from "../entities/user.typeDefs";
+import { User } from "../entities/user.entity";
 import { Arg, Mutation, Resolver, Ctx, Query } from "type-graphql";
 import "dotenv/config";
 import { Response } from "express";
@@ -63,15 +63,15 @@ export class AuthResolver {
         sameSite: "strict", // Prevents the cookie from being sent with cross-origin requests
         //domain: "localhost", // Set the domain to localhost
       });
-      const userResponse: userResponse = {
+      /*    const userResponse: userResponse = {
         id: user.id,
         email: user.email,
         username: user.username,
         role: user.role,
         avatar: user.avatar,
-      };
+      }; */
 
-      return user.id;
+      return accessToken;
     } catch (error) {
       console.error(error);
       throw new Error("Internal server error");

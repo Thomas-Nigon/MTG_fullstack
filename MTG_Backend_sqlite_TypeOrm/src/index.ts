@@ -11,12 +11,19 @@ import { AuthResolver } from "./resolvers/auth.resolvers";
 import { DeckResolver } from "./resolvers/deck.resolvers";
 import { jwtVerify } from "jose";
 import { authChecker } from "./middleware/authChecker";
+import { SetResolver } from "./resolvers/set.resolver";
 
 const main = async () => {
   const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET);
 
   const schema = await buildSchema({
-    resolvers: [UserResolver, CardResolver, AuthResolver, DeckResolver],
+    resolvers: [
+      UserResolver,
+      CardResolver,
+      AuthResolver,
+      DeckResolver,
+      SetResolver,
+    ],
     authChecker,
   });
 
@@ -31,6 +38,7 @@ const main = async () => {
           return { req, res };
         }
         const decoded = await jwtVerify(token, JWT_SECRET);
+
         const user = {
           id: decoded.payload.userId as string,
           email: decoded.payload.email as string,
@@ -45,7 +53,6 @@ const main = async () => {
   });
 
   await dataSource.initialize();
-  //populateDatabase();
 
   console.log(`🚀  Server ready at: ${url}`);
 };

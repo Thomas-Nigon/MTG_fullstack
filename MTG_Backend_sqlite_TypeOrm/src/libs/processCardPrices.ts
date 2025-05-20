@@ -1,5 +1,5 @@
-import { CardPrice } from "../entities/CardPrice.typeDefs";
-import { Card } from "../entities/cards.typeDefs";
+import { CardPrice } from "../entities/CardPrice.entity";
+import { Card } from "../entities/cards.entity";
 
 export const processCardPrice = (cardObj: Card): CardPrice => {
   const cardPrice = new CardPrice();

@@ -7,6 +7,7 @@
     "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "ts-node-dev --respawn src/index.ts",
+    "seed": "ts-node src/seeder/seeder.ts",
     "migrate:create": "typeorm-ts-node-commonjs migration:create",
     "migrate:generate": "typeorm-ts-node-commonjs migration:generate -d src/config/db.ts",
     "migrate:up": "typeorm-ts-node-commonjs migration:run -d src/config/db.ts",

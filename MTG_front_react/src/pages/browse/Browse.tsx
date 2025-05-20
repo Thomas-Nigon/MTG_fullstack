@@ -42,6 +42,7 @@ export default function Browse() {
       page: cardsQueries.currentPage,
     },
     onCompleted: (data) => {
+      console.log(data);
       setPageCount(data.getCardsWithQuery.pageCount);
     },
   });

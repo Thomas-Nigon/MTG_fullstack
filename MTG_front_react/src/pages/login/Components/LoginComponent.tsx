@@ -18,7 +18,7 @@ import { LOGIN_MUTATION } from "@/services/user.service/user.login";
 import { Link, useNavigate } from "react-router-dom";
 import { useMutation } from "@apollo/client";
 
-import { MutationAuthArgs } from "@/lib/graphql/generated/graphql-types";
+import { AuthMutation } from "@/lib/graphql/generated/graphql-types";
 import { handleUser } from "@/services/user.service/user.handleUser";
 
 export interface ILoginResult {
@@ -28,10 +28,10 @@ export interface ILoginResult {
 export default function LoginComponent() {
   const navigate = useNavigate();
 
-  const [loginUser] = useMutation<MutationAuthArgs>(LOGIN_MUTATION, {
+  const [loginUser] = useMutation<AuthMutation>(LOGIN_MUTATION, {
     onCompleted: (response) => {
       console.log("response:", response);
-      handleUser(response);
+      handleUser(response.auth);
       navigate("/");
     },
     onError: (error) => {

@@ -1,10 +1,10 @@
 import { dataSource } from "../config/db";
-import { CardImageUris } from "../entities/cardImageUris.typeDefs";
+import { CardImageUris } from "../entities/cardImageUris.entity";
 import * as fs from "fs";
-import { CardPrice } from "../entities/CardPrice.typeDefs";
-import { Card } from "../entities/cards.typeDefs";
-import { CardStack } from "../entities/cardStack.typeDefs";
-import { Deck } from "../entities/deck.typeDefs";
+import { CardPrice } from "../entities/CardPrice.entity";
+import { Card } from "../entities/cards.entity";
+import { CardStack } from "../entities/cardStack.entity";
+import { Deck } from "../entities/deck.entity";
 import { processCardImageUris } from "./processCardUris";
 import { processCardPrice } from "./processCardPrices";
 
@@ -21,7 +21,10 @@ export async function populateDatabase() {
       await dataSource.initialize();
     }
     // Read the JSON file containing the card array
-    const cardsJson = fs.readFileSync("./src/scripts/chunk_0.json", "utf-8");
+    const cardsJson = fs.readFileSync(
+      "./src/libs/AllCardsFromSetFIN.json",
+      "utf-8"
+    );
     const cardsArray = JSON.parse(cardsJson);
     // Clear the card database
     await dataSource.manager.delete(Deck, {});
@@ -47,7 +50,7 @@ export async function populateDatabase() {
       card.cmc = cardObj.cmc || 0;
       card.type_line = cardObj.type_line || "no_type_line";
       card.colors = cardObj.colors ? cardObj.colors : ["none"];
-      card.color_identity = cardObj.color_identity.length
+      card.color_identity = cardObj.color_identity?.length
         ? cardObj.color_identity
         : ["none"];
       card.produced_mana = cardObj.produced_mana

@@ -1,5 +1,5 @@
-import { CardImageUris } from "../entities/cardImageUris.typeDefs";
-import { Card } from "../entities/cards.typeDefs";
+import { CardImageUris } from "../entities/cardImageUris.entity";
+import { Card } from "../entities/cards.entity";
 
 /**
  * Processes the image URIs of a card object.

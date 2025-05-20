@@ -1,11 +1,16 @@
 import { Arg, Int, Query, Resolver } from "type-graphql";
-import { Card, CardQuery, set } from "../entities/cards.typeDefs";
-import { Like } from "typeorm";
-import { CardPaginationResponse } from "../entities/pagination.typeDefs";
-import { dataSource } from "../config/db";
+import { Card, CardQuery } from "../entities/cards.entity";
+import { CardPaginationResponse } from "../typeDefs/pagination.typeDefs";
+import { CardService } from "../services/card.service";
 
 @Resolver(Card)
 export class CardResolver {
+  private cardService: CardService;
+
+  constructor() {
+    this.cardService = new CardService();
+  }
+
   /**
    * Retrieves all cards from the database.
    * @returns {Promise<Card[]>} A promise that resolves to an array of Card objects.
@@ -13,9 +18,7 @@ export class CardResolver {
    */
   @Query(() => [Card])
   async getCards() {
-    const cards = await Card.find();
-    if (!cards) throw new Error("No cards found");
-    return cards;
+    return this.cardService.getAllCards();
   }
 
   /**
@@ -32,41 +35,7 @@ export class CardResolver {
     @Arg("size", () => Int) size: number,
     @Arg("data") data: CardQuery
   ): Promise<CardPaginationResponse> {
-    let whereClause = {};
-    if (data.rarity) {
-      whereClause = { ...whereClause, rarity: data.rarity as string };
-    }
-    if (data.colors && data.colors !== "all") {
-      whereClause = { ...whereClause, colors: data.colors as string };
-    }
-    if (data.set && data.set !== "all") {
-      whereClause = { ...whereClause, set: data.set as string };
-    }
-    if (data.type && data.type !== "all") {
-      whereClause = { ...whereClause, type_line: data.type as string };
-    }
-
-    try {
-      const [cards, total] = await Card.findAndCount({
-        where: whereClause,
-        take: size,
-        skip: (page - 1) * size,
-        order: {
-          name: "ASC",
-        },
-      });
-      if (cards.length === 0) {
-        throw new Error("No cards found");
-      }
-      return {
-        cards,
-        totalCount: total,
-        pageCount: Math.ceil(total / size),
-      };
-    } catch (error) {
-      console.error(error);
-      throw new Error("Error getting cards");
-    }
+    return this.cardService.getCardsWithQuery(page, size, data);
   }
 
   /**
@@ -76,18 +45,7 @@ export class CardResolver {
    */
   @Query(() => [String])
   async getCardsColors() {
-    try {
-      const colors = await Card.find({
-        select: ["colors"],
-      });
-      const uniqueColors = [
-        ...new Set(colors.flatMap((color) => color.colors)),
-      ];
-      return uniqueColors;
-    } catch (error) {
-      console.log(error);
-      throw new Error("Error getting colors");
-    }
+    return this.cardService.getCardsColors();
   }
 
   /**
@@ -98,20 +56,7 @@ export class CardResolver {
    */
   @Query(() => [String])
   async getCardsTypes(@Arg("type_line") type_line: string) {
-    let whereClause = {};
-    if (type_line) {
-      whereClause = { ...whereClause, type_line: type_line as string };
-    }
-    try {
-      const types = await Card.find({
-        select: ["type_line"],
-      });
-      const uniqueTypes = [...new Set(types.flatMap((t) => t.type_line))];
-      return uniqueTypes;
-    } catch (error) {
-      console.log(error);
-      throw new Error("Error getting types");
-    }
+    return this.cardService.getCardsTypes(type_line);
   }
 
   /**
@@ -122,41 +67,7 @@ export class CardResolver {
    */
   @Query(() => [Card])
   async getCardByName(@Arg("name") name: string) {
-    try {
-      const card = await Card.find({
-        where: {
-          name: Like(`%${name}%`),
-        },
-        take: 10,
-      });
-      return card;
-    } catch (error) {
-      console.log(error);
-      throw new Error("Error getting card");
-    }
-  }
-
-  @Query(() => [set])
-  async getAllSets() {
-    try {
-      const sets = await Card.find({
-        select: ["set_name", "set"],
-        order: {
-          set_name: "ASC",
-        },
-      });
-      const uniqueSets = [
-        ...new Set(
-          sets.map((set) =>
-            JSON.stringify({ name: set.set_name, value: set.set })
-          )
-        ),
-      ].map((set) => JSON.parse(set));
-      return uniqueSets;
-    } catch (error) {
-      console.log(error);
-      throw new Error("Error getting sets");
-    }
+    return this.cardService.getCardByName(name);
   }
 
   /**
@@ -168,18 +79,6 @@ export class CardResolver {
   async getRandomCards(
     @Arg("count", () => Int, { defaultValue: 5 }) count: number
   ): Promise<Card[]> {
-    try {
-      const cards = await dataSource
-        .getRepository(Card)
-        .createQueryBuilder("card")
-        .leftJoinAndSelect("card.image_uris", "image_uris")
-        .orderBy("RANDOM()")
-        .limit(count)
-        .getMany();
-      return cards;
-    } catch (error) {
-      console.error("Error getting random cards:", error);
-      throw new Error("Error getting random cards");
-    }
+    return this.cardService.getRandomCards(count);
   }
 }
