@@ -5,9 +5,9 @@ import { Button } from "../ui/button";
 import { useSelector } from "react-redux";
 import BrowserFilter from "../BrowserFilter/BrowserFilter";
 import { RootState } from "@/store";
-import extensionStore from "@/lib/ZustandStores/store";
+import extensionStore from "@/services/ZustandStores/store";
 import { useStore } from "zustand";
-import { getExtensionList } from "@/lib/getExtensionList";
+import { getExtensionList } from "@/services/getExtensionList";
 
 import { cardQueryInterface } from "@/types-d";
 

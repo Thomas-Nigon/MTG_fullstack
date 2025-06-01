@@ -14,30 +14,24 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
 import { MdOutlineMailOutline, MdLockOutline } from "react-icons/md";
-import { LOGIN } from "@/lib/login";
+import { LOGIN_MUTATION } from "@/services/user.service/user.login";
 import { Link, useNavigate } from "react-router-dom";
 import { useMutation } from "@apollo/client";
-import { useContext, useEffect } from "react";
-import { UserContext } from "@/contexts/UserContext";
-import { MutationAuthArgs } from "@/lib/graphQL/generated/graphql-types";
+
+import { AuthMutation } from "@/lib/graphql/generated/graphql-types";
+import { handleUser } from "@/services/user.service/user.handleUser";
+
+export interface ILoginResult {
+  auth: string;
+}
 
 export default function LoginComponent() {
   const navigate = useNavigate();
-  const { setUser, user } = useContext(UserContext);
 
-  useEffect(() => {}, [user, setUser]);
-
-  const [loginUser] = useMutation<MutationAuthArgs>(LOGIN, {
-    onCompleted: () => {
-      setUser({
-        id: "1",
-        name: "Thomas",
-        email: "thomas@gmail.com",
-        role: "user",
-        isLogged: true,
-        avatar: "",
-      });
-
+  const [loginUser] = useMutation<AuthMutation>(LOGIN_MUTATION, {
+    onCompleted: (response) => {
+      console.log("response:", response);
+      handleUser(response.auth);
       navigate("/");
     },
     onError: (error) => {

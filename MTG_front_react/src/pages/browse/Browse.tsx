@@ -11,13 +11,13 @@ import SingleCard from "@/components/SingleCard/SingleCard";
 import BrowseSideMenu from "@/components/BrowseSideMenu/BrowseSideMenu";
 import BrowsePagination from "./components/Pagination/BrowsePagination";
 import BrowserFilterBar from "@/components/BrowserFilterBar/BrowserFilterBAr";
-import { GET_ALL_CARDS } from "@/lib/getAllCards";
+import { GET_ALL_CARDS } from "@/services/getAllCards";
 import { useLazyQuery } from "@apollo/client";
-import { getExtensionList } from "@/lib/getExtensionList";
+import { getExtensionList } from "@/services/getExtensionList";
 import {
   GetCardsWithQueryQuery,
   GetCardsWithQueryQueryVariables,
-} from "@/lib/graphQL/generated/graphql-types";
+} from "@/lib/graphql/generated/graphql-types";
 
 export default function Browse() {
   const [cardsQueries, setCardQueries] = useState<cardQueryInterface>({
@@ -42,6 +42,7 @@ export default function Browse() {
       page: cardsQueries.currentPage,
     },
     onCompleted: (data) => {
+      console.log(data);
       setPageCount(data.getCardsWithQuery.pageCount);
     },
   });
@@ -94,8 +95,15 @@ export default function Browse() {
           {loading && <p>Loading Cards...</p>}
           {error && <p>Error: {error.message}</p>}
           {data &&
-            data.getCardsWithQuery.cards.map((card: CardInterface) => (
-              <SingleCard key={card.card_id} card={card} addCard={AddCard} />
+            data.getCardsWithQuery.cards.map((card) => (
+              <SingleCard
+                key={card.card_id}
+                card={{
+                  ...card,
+                  image_uris: card.image_uris || { normal: "" },
+                }}
+                addCard={AddCard}
+              />
             ))}
         </section>
         <BrowseSideMenu

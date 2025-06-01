@@ -9,14 +9,22 @@ export type registredUser = {
   password: string;
 };
 
-export type myUserContext = {
+export interface IUser {
   id: string;
-  name: string;
+  username: string;
   email: string;
   role: string;
   isLogged: boolean;
-  avatar: string;
-};
+  avatar?: string;
+}
+export interface IUserContext {
+  id: string;
+  username: string;
+  email: string;
+  role: string;
+  isLogged: boolean;
+  avatar?: string;
+}
 
 export type Params = {
   params: {
@@ -24,10 +32,10 @@ export type Params = {
   };
 };
 
-export interface UserContextType {
-  user: myUserContext;
-  defaultUser: myUserContext;
-  setUser: React.Dispatch<React.SetStateAction<myUserContext>>;
+export interface IUserContextType {
+  user: IUser;
+  defaultUser: IUser;
+  setUser: React.Dispatch<React.SetStateAction<IUser>>;
 }
 
 export interface CardPromise {

@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { UserContext } from "@/contexts/UserContext";
-import { getDecks } from "@/lib/getDecks";
+import { getDecks } from "@/services/getDecks";
 import { DeckInterface } from "@/types-d";
 import { useContext, useEffect, useState } from "react";
 
@@ -16,7 +16,7 @@ export default function User() {
   return (
     <main>
       <h1>Welcome to user page</h1>
-      <p>your are user : {user.name}</p>
+      <p>your are user : {user.username}</p>
       <p>id : {user.id}</p>
       {decks &&
         decks.map((deck) => (

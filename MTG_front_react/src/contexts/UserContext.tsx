@@ -1,16 +1,16 @@
 import { createContext, useState } from "react";
-import { myUserContext, UserContextType } from "../types-d";
+import { IUserContext, IUserContextType } from "../types-d";
 
-const defaultUser: myUserContext = {
+const defaultUser: IUserContext = {
   id: "",
-  name: "",
+  username: "",
   email: "",
   role: "user",
   isLogged: false,
   avatar: "",
 };
 
-export const UserContext = createContext<UserContextType>({
+export const UserContext = createContext<IUserContextType>({
   user: defaultUser,
   defaultUser: defaultUser,
   setUser: () => {},

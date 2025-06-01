@@ -1,8 +1,8 @@
 import { Arg, Mutation, Query, Resolver } from "type-graphql";
-import { User } from "../entities/user.typeDefs";
-import { Deck, DeckInput } from "../entities/deck.typeDefs";
-import { CardStack } from "../entities/cardStack.typeDefs";
-import { Card } from "../entities/cards.typeDefs";
+import { User } from "../entities/user.entity";
+import { Deck, DeckInput } from "../entities/deck.entity";
+import { CardStack } from "../entities/cardStack.entity";
+import { Card } from "../entities/cards.entity";
 
 @Resolver(Deck)
 export class DeckResolver {
